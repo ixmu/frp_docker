@@ -27,7 +27,7 @@ podman run -d \
   -p 7000:7000 \
   -p 7500:7500 \
   -v /etc/frp/frps.toml:/etc/frp/frps.toml:ro \
-  xlousp/frps:latest
+  docker.io/xlousp/frps:latest
 ```
 
 ## 客户端部署 (frpc)
@@ -63,5 +63,5 @@ podman run -d \
   --network host \
   --restart on-failure \
   -v /etc/frp/frpc.toml:/etc/frp/frpc.toml:ro \
-  xlousp/frpc:latest
+  docker.io/xlousp/frpc:latest
 ```
