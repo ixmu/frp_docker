@@ -1,0 +1,37 @@
+name: Sync to Docker Hub
+
+on:
+  registry_package:
+    types: [published] # 当 GHCR 有新镜像发布时触发
+  workflow_dispatch:   # 允许手动点击按钮触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Use Skopeo to Sync
+        run: |
+          # 替换为你自己的镜像名称
+          SRC="ghcr.io/openbmx/gostpanel:latest"
+          DST="docker.io/${{ secrets.DOCKERHUB_USERNAME }}/openbmx-gostpanel:latest"
+          
+          skopeo copy docker://$SRC docker://$DST --all
